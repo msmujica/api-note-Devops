@@ -3,27 +3,17 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Install dependencies') {
-            steps {
-                sh '''
-                    python3 -m venv venv
-                    . venv/bin/activate
-                    pip install --upgrade pip
-                    pip install -r requirements-test.txt
-                '''
-            }
-        }
-
         stage('Run tests') {
+            agent {
+                docker {
+                    image 'python:3.11-slim'
+                }
+            }
+
             steps {
                 sh '''
-                    . venv/bin/activate
+                    pip install -r requirements.txt
+                    pip install pytest httpx
                     pytest -v
                 '''
             }
@@ -32,7 +22,7 @@ pipeline {
         stage('Build Docker image') {
             steps {
                 sh '''
-                    docker build -t notes-app:v2 .
+                    docker build -t msjapp-notes_api .
                 '''
             }
         }
@@ -40,7 +30,7 @@ pipeline {
 
     post {
         success {
-            echo 'Tests OK - Imagen Docker creada correctamente'
+            echo 'Pipeline completada correctamente'
         }
 
         failure {
