@@ -16,7 +16,7 @@ pipeline {
                 sh '''
                     docker run --rm \
                         msjapp-notes_api:test \
-                        pytest -v
+                        python -m pytest -v
                 '''
             }
         }
