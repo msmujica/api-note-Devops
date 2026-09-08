@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: msjapi-deployment
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: msjapi
+  template:
+    metadata:
+      labels:
+        app: msjapi
+    spec:
+      containers:
+        - name: msjapi
+          image: msjapp-notes_api
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
