@@ -27,14 +27,4 @@ pipeline {
             }
         }
     }
-
-    post {
-        success {
-            echo 'Pipeline completada correctamente'
-        }
-
-        failure {
-            echo 'La pipeline fallo'
-        }
-    }
 }
