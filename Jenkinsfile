@@ -3,22 +3,30 @@ pipeline {
 
     stages {
 
-        stage('Run tests') {
+        stage('Build test image') {
             steps {
                 sh '''
-                    docker run --rm \
-                        -v "$WORKSPACE:/app" \
-                        -w /app \
-                        python:3.11-slim \
-                        sh -c "pip install -r requirements.txt pytest httpx && pytest -v"
+                    docker build -t msjapp-notes_api:test .
                 '''
             }
         }
 
-        stage('Build Docker image') {
+        stage('Run tests') {
             steps {
                 sh '''
-                    docker build -t msjapp-notes_api:latest .
+                    docker run --rm \
+                        msjapp-notes_api:test \
+                        pytest -v
+                '''
+            }
+        }
+
+        stage('Build final image') {
+            steps {
+                sh '''
+                    docker tag \
+                        msjapp-notes_api:test \
+                        msjapp-notes_api:latest
                 '''
             }
         }
